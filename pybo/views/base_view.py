@@ -2,7 +2,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q, Count
 from django.shortcuts import render, get_object_or_404
 
-from ..models import Question, Answer, QuestionCount
+from ..models import Question, Answer, QuestionCount, Category
 
 
 def get_client_ip(request):
@@ -13,7 +13,7 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-def index(request):
+def index(request, category_name='qna'):
     """
     pybo 목록 출력
     """
@@ -21,6 +21,10 @@ def index(request):
     page = request.GET.get('page', '1')  # 페이지
     kw = request.GET.get('kw', '')  # 검색어
     so = request.GET.get('so', 'recent')  # 정렬기준
+
+    category_list = Category.objects.all()
+    category = get_object_or_404(Category, name=category_name)
+    question_list = Question.objects.filter(category=category)
 
     # 정렬
     if so == 'recommend':
@@ -43,7 +47,7 @@ def index(request):
     paginator = Paginator(question_list, 10)  # 페이지당 10개씩 보여주기
     page_obj = paginator.get_page(page)
 
-    context = {'question_list': page_obj, 'page':page, 'kw': kw, 'so':so}
+    context = {'question_list': page_obj, 'page':page, 'kw': kw, 'so':so, 'category_list': category_list, 'category': category}
     return render(request, 'pybo/question_list.html', context)
 
 def detail(request, question_id):
