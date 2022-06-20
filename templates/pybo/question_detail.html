@@ -11,7 +11,7 @@
     {% endfor %}
     </div>
     {% endif %}
-    <h2 class="border-bottom py-2">{{ question.subject }}</h2>
+    <h2 class="border-bottom py-2">[{{ category.description }}] {{ question.subject }}</h2>
     <h7>조회수: {{ question.hits }}</h7>
     <div class="row my-3">
         <div class="col-1"> <!-- 추천영역 -->
